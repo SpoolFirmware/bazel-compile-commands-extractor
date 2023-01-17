@@ -735,6 +735,10 @@ def _all_platform_patch(compile_args: typing.List[str]):
     # For more context see: https://github.com/hedronvision/bazel-compile-commands-extractor/issues/21
     compile_args = (arg for arg in compile_args if not arg == '-fno-canonical-system-headers')
 
+    # ARM gcc adds this flag that clang does not support, we remove it here as a hotfix.
+    # TODO: investigate if this causes issues
+    compile_args = (arg for arg in compile_args if not arg == "-mfpu=auto")
+
     # Swap -isysroot for --sysroot to work around (probably) https://github.com/clangd/clangd/issues/1305
     # For context, see https://github.com/clangd/clangd/issues/1305
     # The = logic has to do with clang not accepting -isysroot=, but accepting --sysroot=. Note that -isysroot <path> is accepted, though undocumented.
